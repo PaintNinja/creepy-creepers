@@ -20,6 +20,7 @@
  */
 package dev.tophatcat.creepycreepers.init;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -29,24 +30,27 @@ public class CreeperSpawnHandler {
 
     public static void biomeLoad(BiomeLoadingEvent event) {
         if (event.getName() != null) {
-            if (event.getCategory() != Biome.BiomeCategory.NETHER
-                && event.getCategory() != Biome.BiomeCategory.THEEND) {
-                //Ghostly Creeper
-                event.getSpawns().getSpawner(MobCategory.MONSTER)
-                    .add(new MobSpawnSettings.SpawnerData(
-                        CreepyRegistry.GHOSTLY_CREEPER.get(),
-                        CreepyConfig.CONFIG.weightMultiplierGhostly.get(),
-                        CreepyConfig.CONFIG.minSpawnGroupGhostly.get(),
-                        CreepyConfig.CONFIG.maxSpawnGroupGhostly.get())
-                    );
-                //Australian Creeper
-                event.getSpawns().getSpawner(MobCategory.MONSTER)
-                    .add(new MobSpawnSettings.SpawnerData(
-                        CreepyRegistry.AUSTRALIAN_CREEPER.get(),
-                        CreepyConfig.CONFIG.weightMultiplierAustralian.get(),
-                        CreepyConfig.CONFIG.minSpawnGroupAustralian.get(),
-                        CreepyConfig.CONFIG.maxSpawnGroupAustralian.get())
-                    );
+            ResourceLocation name = event.getName();
+            if (name != null) {
+                if (event.getCategory() != Biome.BiomeCategory.NETHER
+                    && event.getCategory() != Biome.BiomeCategory.THEEND) {
+                    //Ghostly Creeper
+                    event.getSpawns().getSpawner(MobCategory.MONSTER)
+                        .add(new MobSpawnSettings.SpawnerData(
+                            CreepyRegistry.GHOSTLY_CREEPER.get(),
+                            CreepyConfig.CONFIG.weightMultiplierGhostly.get(),
+                            CreepyConfig.CONFIG.minSpawnGroupGhostly.get(),
+                            CreepyConfig.CONFIG.maxSpawnGroupGhostly.get())
+                        );
+                    //Australian Creeper
+                    event.getSpawns().getSpawner(MobCategory.MONSTER)
+                        .add(new MobSpawnSettings.SpawnerData(
+                            CreepyRegistry.AUSTRALIAN_CREEPER.get(),
+                            CreepyConfig.CONFIG.weightMultiplierAustralian.get(),
+                            CreepyConfig.CONFIG.minSpawnGroupAustralian.get(),
+                            CreepyConfig.CONFIG.maxSpawnGroupAustralian.get())
+                        );
+                }
             }
         }
     }
