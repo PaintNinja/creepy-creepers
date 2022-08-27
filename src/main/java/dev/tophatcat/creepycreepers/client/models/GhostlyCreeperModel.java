@@ -20,75 +20,50 @@
  */
 package dev.tophatcat.creepycreepers.client.models;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.tophatcat.creepycreepers.CreepyCreepers;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import dev.tophatcat.creepycreepers.entities.GhostlyCreeperEntity;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 import javax.annotation.Nonnull;
 
-public class GhostlyCreeperModel<T extends GhostlyCreeperEntity> extends EntityModel<T> {
+public class GhostlyCreeperModel extends EntityModel<GhostlyCreeperEntity> {
 
-    public static final ModelLayerLocation GHOSTLY_CREEPER_LAYER_LOCATION
-        = new ModelLayerLocation(new ResourceLocation(CreepyCreepers.MOD_ID,
-        "ghostly_creeper"), "main");
-    private final ModelPart head;
-    private final ModelPart body;
+    private final ModelRenderer body;
+    private final ModelRenderer head;
 
-    public GhostlyCreeperModel(ModelPart root) {
-        super(RenderType::entityTranslucent);
-        head = root.getChild("head");
-        body = root.getChild("body");
-    }
+    public GhostlyCreeperModel() {
+        texWidth = 64;
+        texHeight = 32;
 
-    public static LayerDefinition createBodyLayer() {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
+        body = new ModelRenderer(this);
+        body.setPos(0.0F, 6.0F, 0.0F);
+        body.texOffs(16, 16).addBox(-4.0F, 0.0F, -2.0F,
+            8.0F, 12.0F, 4.0F, 0.0F, false);
 
-        partDefinition.addOrReplaceChild("body",
-            CubeListBuilder.create().texOffs(16, 16)
-                .addBox(-4.0F, 0.0F, -2.0F,
-                    8.0F, 12.0F, 4.0F,
-                    new CubeDeformation(0.0F)),
-            PartPose.offset(0.0F, 6.0F, 0.0F));
-
-        partDefinition.addOrReplaceChild("head",
-            CubeListBuilder.create().texOffs(0, 0)
-                .addBox(-4.0F, -8.0F, -4.0F,
-                    8.0F, 8.0F, 8.0F,
-                    new CubeDeformation(0.0F)),
-            PartPose.offset(0.0F, 0.0F, 0.0F));
-
-        return LayerDefinition.create(meshDefinition, 64, 32);
+        head = new ModelRenderer(this);
+        head.setPos(0.0F, 0.0F, 0.0F);
+        body.addChild(head);
+        head.texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F,
+            8.0F, 8.0F, 8.0F, 0.0F, false);
     }
 
     @Override
-    public void setupAnim(@Nonnull T entity, float limbSwing, float limbSwingAmount,
+    public void setupAnim(@Nonnull GhostlyCreeperEntity entity, float limbSwing, float limbSwingAmount,
                           float ageInTicks, float netHeadYaw, float headPitch) {
-        head.yRot = netHeadYaw * ((float) Math.PI / 180F);
-        head.xRot = headPitch * ((float) Math.PI / 180F);
-        if (!entity.isIgnited()) {
-            head.y = Mth.cos(ageInTicks * 0.25F) * 0.7F;
-            body.y = Mth.cos(ageInTicks * 0.25F) * 0.7F;
-        }
+        //previously the render function, render code was moved to a method below
     }
 
     @Override
-    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer,
-                               int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, 0.7F);
-        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, 0.7F);
+    public void renderToBuffer(@Nonnull MatrixStack matrixStack, @Nonnull IVertexBuilder buffer, int packedLight,
+                               int packedOverlay, float red, float green, float blue, float alpha) {
+        body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.xRot = x;
+        modelRenderer.yRot = y;
+        modelRenderer.zRot = z;
     }
 }

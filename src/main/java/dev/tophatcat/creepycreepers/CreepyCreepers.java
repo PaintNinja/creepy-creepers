@@ -21,10 +21,14 @@
 package dev.tophatcat.creepycreepers;
 
 import dev.tophatcat.creepycreepers.client.CreeperRenderingRegistry;
+import dev.tophatcat.creepycreepers.init.CreeperSpawnHandler;
+import dev.tophatcat.creepycreepers.init.CreepyConfig;
 import dev.tophatcat.creepycreepers.init.CreepyRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
@@ -33,18 +37,21 @@ public class CreepyCreepers {
 
     public static final String MOD_ID = "creepycreepers";
 
+    //TODO Restore missing creeper animations.
+    //TODO Find out why spawning is not working and fixit.
+
     public CreepyCreepers() {
         IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
+        ModLoadingContext modLoadingContext = ModLoadingContext.get();
+        modLoadingContext.registerConfig(ModConfig.Type.SERVER, CreepyConfig.SERVER_CONFIG_SPEC);
 
         CreepyRegistry.ENTITIES.register(mod);
-        CreepyRegistry.ITEMS.register(mod);
         CreepyRegistry.SOUNDS.register(mod);
-        mod.addListener(CreepyRegistry::registerSpawns);
-        mod.addListener(CreepyRegistry::registerAttributes);
+        mod.addListener(CreepyRegistry::registerSpawnPlacements);
+        mod.addListener(CreeperSpawnHandler::addBiomeSpawns);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             mod.addListener(CreeperRenderingRegistry::registerEntityModels);
-            mod.addListener(CreeperRenderingRegistry::registerLayerDefinition);
         }
     }
 }

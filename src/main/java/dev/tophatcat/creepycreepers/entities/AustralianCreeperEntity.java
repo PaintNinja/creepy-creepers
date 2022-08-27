@@ -21,19 +21,18 @@
 package dev.tophatcat.creepycreepers.entities;
 
 import dev.tophatcat.creepycreepers.init.CreepyRegistry;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import java.util.Random;
 
-public class AustralianCreeperEntity extends Creeper {
+public class AustralianCreeperEntity extends CreeperEntity {
 
     /**
      * Constructor for the creeper.
@@ -41,15 +40,14 @@ public class AustralianCreeperEntity extends Creeper {
      * @param type  The entity type.
      * @param level The current world.
      */
-    public AustralianCreeperEntity(final EntityType<? extends Creeper> type, Level level) {
+    public AustralianCreeperEntity(final EntityType<? extends CreeperEntity> type, World level) {
         super(type, level);
     }
 
-    public static boolean canSpawn(EntityType<? extends AustralianCreeperEntity> creeper, ServerLevelAccessor world,
-                                   MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canSpawn(EntityType<? extends AustralianCreeperEntity> creeper, World world,
+                                   SpawnReason reason, BlockPos pos, Random random) {
         return pos.getY() < 320
-            && (world.getBlockState(pos.below()).is(Blocks.STONE)
-            || world.getBlockState(pos.below()).is(Blocks.DEEPSLATE))
+            && (world.getBlockState(pos.below()).getBlock() == Blocks.STONE)
             && isDarkEnoughToSpawn(world, pos, random) && checkMobSpawnRules(creeper, world, reason, pos, random);
     }
 

@@ -23,36 +23,29 @@ package dev.tophatcat.creepycreepers.init;
 import dev.tophatcat.creepycreepers.CreepyCreepers;
 import dev.tophatcat.creepycreepers.entities.AustralianCreeperEntity;
 import dev.tophatcat.creepycreepers.entities.GhostlyCreeperEntity;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.common.ForgeSpawnEggItem;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraftforge.fml.DeferredWorkQueue;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 public class CreepyRegistry {
-
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(
-        ForgeRegistries.ITEMS, CreepyCreepers.MOD_ID);
 
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(
         ForgeRegistries.SOUND_EVENTS, CreepyCreepers.MOD_ID);
 
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(
-        ForgeRegistries.ENTITY_TYPES, CreepyCreepers.MOD_ID);
+        ForgeRegistries.ENTITIES, CreepyCreepers.MOD_ID);
 
     public static final RegistryObject<EntityType<GhostlyCreeperEntity>> GHOSTLY_CREEPER = ENTITIES.register(
-        "ghostly_creeper", () -> EntityType.Builder.of(GhostlyCreeperEntity::new, MobCategory.MONSTER)
+        "ghostly_creeper", () -> EntityType.Builder.of(GhostlyCreeperEntity::new, EntityClassification.MONSTER)
             .sized(0.6F, 1.7F)
             .setTrackingRange(80)
             .setUpdateInterval(1)
@@ -61,22 +54,14 @@ public class CreepyRegistry {
     );
 
     public static final RegistryObject<EntityType<AustralianCreeperEntity>> AUSTRALIAN_CREEPER = ENTITIES.register(
-        "australian_creeper", () -> EntityType.Builder.of(AustralianCreeperEntity::new, MobCategory.MONSTER)
+        "australian_creeper", () -> EntityType.Builder.of(AustralianCreeperEntity::new,
+                EntityClassification.MONSTER)
             .sized(0.6F, 1.7F)
             .setTrackingRange(80)
             .setUpdateInterval(1)
             .setShouldReceiveVelocityUpdates(true)
             .build(new ResourceLocation(CreepyCreepers.MOD_ID, "australian_creeper").toString())
     );
-
-    private static final RegistryObject<SpawnEggItem> GHOSTLY_CREEPER_SPAWN_EGG = ITEMS.register(
-        "ghostly_creeper_spawn_egg", () -> new ForgeSpawnEggItem(GHOSTLY_CREEPER, 0xFFFFFF,
-            0x808080, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
-
-    private static final RegistryObject<SpawnEggItem> AUSTRALIAN_CREEPER_SPAWN_EGG = ITEMS.register(
-        "australian_creeper_spawn_egg", () -> new ForgeSpawnEggItem(AUSTRALIAN_CREEPER, 0x0000FF,
-            0xFFFFFF, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
-
 
     public static final RegistryObject<SoundEvent> GHOSTLY_CREEPER_SOUND = SOUNDS.register(
         "ghostly_creeper_scream", () -> new SoundEvent(
@@ -85,19 +70,16 @@ public class CreepyRegistry {
         "australian_creeper", () -> new SoundEvent(
             new ResourceLocation(CreepyCreepers.MOD_ID, "australian_creeper")));
 
-    public static void registerSpawns(FMLConstructModEvent event) {
-        event.enqueueWork(() -> {
-            SpawnPlacements.register(GHOSTLY_CREEPER.get(),
-                SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                GhostlyCreeperEntity::canSpawn);
-            SpawnPlacements.register(AUSTRALIAN_CREEPER.get(),
-                SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                AustralianCreeperEntity::canSpawn);
+    public static void registerSpawnPlacements(FMLCommonSetupEvent event) {
+        DeferredWorkQueue.runLater(() -> {
+            EntitySpawnPlacementRegistry.register(GHOSTLY_CREEPER.get(),
+                EntitySpawnPlacementRegistry.PlacementType.ON_GROUND,
+                Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+                MobEntity::checkMobSpawnRules);
+            EntitySpawnPlacementRegistry.register(AUSTRALIAN_CREEPER.get(),
+                EntitySpawnPlacementRegistry.PlacementType.ON_GROUND,
+                Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+                MobEntity::checkMobSpawnRules);
         });
-    }
-
-    public static void registerAttributes(EntityAttributeCreationEvent event) {
-        event.put(GHOSTLY_CREEPER.get(), Creeper.createAttributes().build());
-        event.put(AUSTRALIAN_CREEPER.get(), Creeper.createAttributes().build());
     }
 }

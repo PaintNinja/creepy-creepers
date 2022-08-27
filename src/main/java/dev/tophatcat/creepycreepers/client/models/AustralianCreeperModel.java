@@ -20,124 +20,141 @@
  */
 package dev.tophatcat.creepycreepers.client.models;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.tophatcat.creepycreepers.CreepyCreepers;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import dev.tophatcat.creepycreepers.entities.AustralianCreeperEntity;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 import javax.annotation.Nonnull;
 
-public class AustralianCreeperModel<T extends AustralianCreeperEntity> extends EntityModel<T> {
+public class AustralianCreeperModel extends EntityModel<AustralianCreeperEntity> {
 
-    public static final ModelLayerLocation AUSTRALIAN_CREEPER_LAYER_LOCATION = new ModelLayerLocation(
-        new ResourceLocation(CreepyCreepers.MOD_ID, "australian_creeper"), "main");
+    private final ModelRenderer body;
+    private final ModelRenderer body_r1;
+    private final ModelRenderer backLeftLeg;
+    private final ModelRenderer backLeftLeg_r1;
+    private final ModelRenderer frontLeftLeg;
+    private final ModelRenderer frontLeftLeg_r1;
+    private final ModelRenderer frontRightLeg;
+    private final ModelRenderer frontRightLeg_r1;
+    private final ModelRenderer head;
+    private final ModelRenderer head_r1;
+    private final ModelRenderer poweredOverlay;
+    private final ModelRenderer poweredOverlay_r1;
+    private final ModelRenderer backRightLeg;
+    private final ModelRenderer backRightLeg_r1;
 
-    private final ModelPart body;
-    private final ModelPart head;
-    private final ModelPart backRightLeg;
-    private final ModelPart frontLeftLeg;
-    private final ModelPart frontRightLeg;
-    private final ModelPart backLeftLeg;
+    public AustralianCreeperModel() {
+        texWidth = 64;
+        texHeight = 32;
 
-    public AustralianCreeperModel(ModelPart root) {
-        this.body = root.getChild("body");
-        this.head = root.getChild("head");
-        this.backRightLeg = root.getChild("backRightLeg");
-        this.frontLeftLeg = root.getChild("frontLeftLeg");
-        this.frontRightLeg = root.getChild("frontRightLeg");
-        this.backLeftLeg = root.getChild("backLeftLeg");
-    }
-
-    public static LayerDefinition createBodyLayer() {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
-
-        PartDefinition body = partDefinition.addOrReplaceChild("body",
-            CubeListBuilder.create().texOffs(16, 16)
-                .addBox(-4.0F, -6.0F, -2.0F,
-                    8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)),
-            PartPose.offset(0.0F, 10.0F, 0.0F));
-
-        PartDefinition head = partDefinition.addOrReplaceChild("head",
-            CubeListBuilder.create().texOffs(0, 0)
-                .addBox(-4.0F, 0.0F, -4.0F,
-                    8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)),
-            PartPose.offset(0.0F, 16.0F, 0.0F));
-
-        PartDefinition backRightLeg = partDefinition.addOrReplaceChild("backRightLeg",
-            CubeListBuilder.create(), PartPose.offset(-2.0F, 4.0F, 4.0F));
-
-        PartDefinition backRightLegRotation = backRightLeg.addOrReplaceChild("backRightLegRotation",
-            CubeListBuilder.create().texOffs(0, 16)
-                .addBox(0.0F, -6.0F, 2.0F, 4.0F,
-                    6.0F, 4.0F, new CubeDeformation(0.0F)),
-            PartPose.offsetAndRotation(2.0F, -6.0F, -4.0F,
-                0.0F, 0.0F, -3.1416F));
-
-        PartDefinition frontRightLeg = partDefinition.addOrReplaceChild("frontRightLeg",
-            CubeListBuilder.create(), PartPose.offset(-2.0F, 4.0F, -4.0F));
-
-        PartDefinition frontRightLegRotation = frontRightLeg.addOrReplaceChild("frontRightLegRotation",
-            CubeListBuilder.create().texOffs(0, 16)
-                .addBox(0.0F, -6.0F, -6.0F,
-                    4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)),
-            PartPose.offsetAndRotation(2.0F, -6.0F, 4.0F,
-                0.0F, 0.0F, -3.1416F));
-
-        PartDefinition frontLeftLeg = partDefinition.addOrReplaceChild("frontLeftLeg",
-            CubeListBuilder.create(), PartPose.offset(2.0F, 4.0F, -4.0F));
-
-        PartDefinition frontLeftLegRotation = frontLeftLeg.addOrReplaceChild("frontLeftLegRotation",
-            CubeListBuilder.create().texOffs(0, 16)
-                .addBox(-2.0F, -3.0F, -2.0F,
-                    4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)),
-            PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F,
-                0.0F, 0.0F, -3.1416F));
-
-        PartDefinition backLeftLeg = partDefinition.addOrReplaceChild("backLeftLeg",
-            CubeListBuilder.create(), PartPose.offset(2.0F, 4.0F, 4.0F));
-
-        PartDefinition backLeftLegRotation = backLeftLeg.addOrReplaceChild("backLeftLegRotation",
-            CubeListBuilder.create().texOffs(0, 16)
-                .addBox(-4.0F, -6.0F, 2.0F,
-                    4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)),
-            PartPose.offsetAndRotation(-2.0F, -6.0F, -4.0F,
-                0.0F, 0.0F, -3.1416F));
+        body = new ModelRenderer(this);
+        body.setPos(0.0F, 10.0F, 0.0F);
 
 
-        return LayerDefinition.create(meshDefinition, 64, 32);
+        body_r1 = new ModelRenderer(this);
+        body_r1.setPos(0.0F, 14.0F, 0.0F);
+        body.addChild(body_r1);
+        setRotationAngle(body_r1, 0.0F, 0.0F, -3.1416F);
+        body_r1.texOffs(16, 16)
+            .addBox(-4.0F, 8.0F, -2.0F,
+                8.0F, 12.0F, 4.0F, 0.0F, false);
+
+        backLeftLeg = new ModelRenderer(this);
+        backLeftLeg.setPos(2.0F, 4.0F, 4.0F);
+
+
+        backLeftLeg_r1 = new ModelRenderer(this);
+        backLeftLeg_r1.setPos(0.0F, -3.0F, 0.0F);
+        backLeftLeg.addChild(backLeftLeg_r1);
+        setRotationAngle(backLeftLeg_r1, 0.0F, 0.0F, -3.1416F);
+        backLeftLeg_r1.texOffs(0, 16)
+            .addBox(-2.0F, -3.0F, -2.0F,
+                4.0F, 6.0F, 4.0F, 0.0F, false);
+
+        frontLeftLeg = new ModelRenderer(this);
+        frontLeftLeg.setPos(2.0F, 4.0F, -4.0F);
+
+
+        frontLeftLeg_r1 = new ModelRenderer(this);
+        frontLeftLeg_r1.setPos(0.0F, -3.0F, 0.0F);
+        frontLeftLeg.addChild(frontLeftLeg_r1);
+        setRotationAngle(frontLeftLeg_r1, 0.0F, 0.0F, -3.1416F);
+        frontLeftLeg_r1.texOffs(0, 16)
+            .addBox(-2.0F, -3.0F, -2.0F,
+                4.0F, 6.0F, 4.0F, 0.0F, false);
+
+        frontRightLeg = new ModelRenderer(this);
+        frontRightLeg.setPos(-2.0F, 4.0F, -4.0F);
+
+
+        frontRightLeg_r1 = new ModelRenderer(this);
+        frontRightLeg_r1.setPos(0.0F, -3.0F, 0.0F);
+        frontRightLeg.addChild(frontRightLeg_r1);
+        setRotationAngle(frontRightLeg_r1, 0.0F, 0.0F, -3.1416F);
+        frontRightLeg_r1.texOffs(0, 16)
+            .addBox(-2.0F, -3.0F, -2.0F,
+                4.0F, 6.0F, 4.0F, 0.0F, false);
+
+        head = new ModelRenderer(this);
+        head.setPos(0.0F, 6.0F, 0.0F);
+
+
+        head_r1 = new ModelRenderer(this);
+        head_r1.setPos(0.0F, 14.0F, 0.0F);
+        head.addChild(head_r1);
+        setRotationAngle(head_r1, 0.0F, 0.0F, -3.1416F);
+        head_r1.texOffs(0, 0)
+            .addBox(-4.0F, -4.0F, -4.0F,
+                8.0F, 8.0F, 8.0F, 0.0F, false);
+
+        poweredOverlay = new ModelRenderer(this);
+        poweredOverlay.setPos(0.0F, 6.0F, 0.0F);
+
+
+        poweredOverlay_r1 = new ModelRenderer(this);
+        poweredOverlay_r1.setPos(0.0F, 14.0F, 0.0F);
+        poweredOverlay.addChild(poweredOverlay_r1);
+        setRotationAngle(poweredOverlay_r1, 0.0F, 0.0F, -3.1416F);
+        poweredOverlay_r1.texOffs(32, 0)
+            .addBox(-4.0F, -4.0F, -4.0F,
+                8.0F, 8.0F, 8.0F, 0.0F, false);
+
+        backRightLeg = new ModelRenderer(this);
+        backRightLeg.setPos(-2.0F, 4.0F, 4.0F);
+
+
+        backRightLeg_r1 = new ModelRenderer(this);
+        backRightLeg_r1.setPos(0.0F, -3.0F, 0.0F);
+        backRightLeg.addChild(backRightLeg_r1);
+        setRotationAngle(backRightLeg_r1, 0.0F, 0.0F, -3.1416F);
+        backRightLeg_r1.texOffs(0, 16)
+            .addBox(-2.0F, -3.0F, -2.0F,
+                4.0F, 6.0F, 4.0F, 0.0F, false);
     }
 
     @Override
-    public void setupAnim(@Nonnull T entity, float limbSwing, float limbSwingAmount,
+    public void setupAnim(@Nonnull AustralianCreeperEntity entity, float limbSwing, float limbSwingAmount,
                           float ageInTicks, float netHeadYaw, float headPitch) {
-        head.yRot = netHeadYaw * ((float) Math.PI / 180F);
-        head.xRot = headPitch * ((float) Math.PI / 180F);
-        backRightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        backLeftLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        frontRightLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        frontLeftLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        //previously the render function, render code was moved to a method below
     }
 
     @Override
-    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer,
-                               int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        backRightLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        frontLeftLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        frontRightLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        backLeftLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(@Nonnull MatrixStack matrixStack, @Nonnull IVertexBuilder buffer, int packedLight,
+                               int packedOverlay, float red, float green, float blue, float alpha) {
+        body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        backLeftLeg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        frontLeftLeg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        frontRightLeg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        head.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        poweredOverlay.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        backRightLeg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+    }
+
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.xRot = x;
+        modelRenderer.yRot = y;
+        modelRenderer.zRot = z;
     }
 }

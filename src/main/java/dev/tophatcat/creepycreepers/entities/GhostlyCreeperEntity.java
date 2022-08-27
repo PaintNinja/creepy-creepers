@@ -21,19 +21,15 @@
 package dev.tophatcat.creepycreepers.entities;
 
 import dev.tophatcat.creepycreepers.init.CreepyRegistry;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class GhostlyCreeperEntity extends Creeper {
+public class GhostlyCreeperEntity extends CreeperEntity {
 
     /**
      * Constructor for the creeper.
@@ -41,16 +37,8 @@ public class GhostlyCreeperEntity extends Creeper {
      * @param type  The entity type.
      * @param level The current world.
      */
-    public GhostlyCreeperEntity(final EntityType<? extends Creeper> type, final Level level) {
+    public GhostlyCreeperEntity(final EntityType<? extends CreeperEntity> type, final World level) {
         super(type, level);
-    }
-
-    public static boolean canSpawn(EntityType<? extends GhostlyCreeperEntity> creeper, ServerLevelAccessor world,
-                                   MobSpawnType reason, BlockPos pos, RandomSource random) {
-        return pos.getY() < 320
-            && (world.getBlockState(pos.below()).is(Blocks.STONE)
-            || world.getBlockState(pos.below()).is(Blocks.DEEPSLATE))
-            && isDarkEnoughToSpawn(world, pos, random) && checkMobSpawnRules(creeper, world, reason, pos, random);
     }
 
     /**
