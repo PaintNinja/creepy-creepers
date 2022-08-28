@@ -25,25 +25,19 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import dev.tophatcat.creepycreepers.entities.AustralianCreeperEntity;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 
 public class AustralianCreeperModel extends EntityModel<AustralianCreeperEntity> {
 
     private final ModelRenderer body;
-    private final ModelRenderer body_r1;
     private final ModelRenderer backLeftLeg;
-    private final ModelRenderer backLeftLeg_r1;
     private final ModelRenderer frontLeftLeg;
-    private final ModelRenderer frontLeftLeg_r1;
     private final ModelRenderer frontRightLeg;
-    private final ModelRenderer frontRightLeg_r1;
     private final ModelRenderer head;
-    private final ModelRenderer head_r1;
     private final ModelRenderer poweredOverlay;
-    private final ModelRenderer poweredOverlay_r1;
     private final ModelRenderer backRightLeg;
-    private final ModelRenderer backRightLeg_r1;
 
     public AustralianCreeperModel() {
         texWidth = 64;
@@ -53,7 +47,7 @@ public class AustralianCreeperModel extends EntityModel<AustralianCreeperEntity>
         body.setPos(0.0F, 10.0F, 0.0F);
 
 
-        body_r1 = new ModelRenderer(this);
+        ModelRenderer body_r1 = new ModelRenderer(this);
         body_r1.setPos(0.0F, 14.0F, 0.0F);
         body.addChild(body_r1);
         setRotationAngle(body_r1, 0.0F, 0.0F, -3.1416F);
@@ -65,7 +59,7 @@ public class AustralianCreeperModel extends EntityModel<AustralianCreeperEntity>
         backLeftLeg.setPos(2.0F, 4.0F, 4.0F);
 
 
-        backLeftLeg_r1 = new ModelRenderer(this);
+        ModelRenderer backLeftLeg_r1 = new ModelRenderer(this);
         backLeftLeg_r1.setPos(0.0F, -3.0F, 0.0F);
         backLeftLeg.addChild(backLeftLeg_r1);
         setRotationAngle(backLeftLeg_r1, 0.0F, 0.0F, -3.1416F);
@@ -77,7 +71,7 @@ public class AustralianCreeperModel extends EntityModel<AustralianCreeperEntity>
         frontLeftLeg.setPos(2.0F, 4.0F, -4.0F);
 
 
-        frontLeftLeg_r1 = new ModelRenderer(this);
+        ModelRenderer frontLeftLeg_r1 = new ModelRenderer(this);
         frontLeftLeg_r1.setPos(0.0F, -3.0F, 0.0F);
         frontLeftLeg.addChild(frontLeftLeg_r1);
         setRotationAngle(frontLeftLeg_r1, 0.0F, 0.0F, -3.1416F);
@@ -89,7 +83,7 @@ public class AustralianCreeperModel extends EntityModel<AustralianCreeperEntity>
         frontRightLeg.setPos(-2.0F, 4.0F, -4.0F);
 
 
-        frontRightLeg_r1 = new ModelRenderer(this);
+        ModelRenderer frontRightLeg_r1 = new ModelRenderer(this);
         frontRightLeg_r1.setPos(0.0F, -3.0F, 0.0F);
         frontRightLeg.addChild(frontRightLeg_r1);
         setRotationAngle(frontRightLeg_r1, 0.0F, 0.0F, -3.1416F);
@@ -101,7 +95,7 @@ public class AustralianCreeperModel extends EntityModel<AustralianCreeperEntity>
         head.setPos(0.0F, 6.0F, 0.0F);
 
 
-        head_r1 = new ModelRenderer(this);
+        ModelRenderer head_r1 = new ModelRenderer(this);
         head_r1.setPos(0.0F, 14.0F, 0.0F);
         head.addChild(head_r1);
         setRotationAngle(head_r1, 0.0F, 0.0F, -3.1416F);
@@ -113,7 +107,7 @@ public class AustralianCreeperModel extends EntityModel<AustralianCreeperEntity>
         poweredOverlay.setPos(0.0F, 6.0F, 0.0F);
 
 
-        poweredOverlay_r1 = new ModelRenderer(this);
+        ModelRenderer poweredOverlay_r1 = new ModelRenderer(this);
         poweredOverlay_r1.setPos(0.0F, 14.0F, 0.0F);
         poweredOverlay.addChild(poweredOverlay_r1);
         setRotationAngle(poweredOverlay_r1, 0.0F, 0.0F, -3.1416F);
@@ -125,7 +119,7 @@ public class AustralianCreeperModel extends EntityModel<AustralianCreeperEntity>
         backRightLeg.setPos(-2.0F, 4.0F, 4.0F);
 
 
-        backRightLeg_r1 = new ModelRenderer(this);
+        ModelRenderer backRightLeg_r1 = new ModelRenderer(this);
         backRightLeg_r1.setPos(0.0F, -3.0F, 0.0F);
         backRightLeg.addChild(backRightLeg_r1);
         setRotationAngle(backRightLeg_r1, 0.0F, 0.0F, -3.1416F);
@@ -138,6 +132,12 @@ public class AustralianCreeperModel extends EntityModel<AustralianCreeperEntity>
     public void setupAnim(@Nonnull AustralianCreeperEntity entity, float limbSwing, float limbSwingAmount,
                           float ageInTicks, float netHeadYaw, float headPitch) {
         //previously the render function, render code was moved to a method below
+        head.yRot = netHeadYaw * ((float) Math.PI / 180F);
+        head.xRot = headPitch * ((float) Math.PI / 180F);
+        backRightLeg.xRot = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        backLeftLeg.xRot = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        frontRightLeg.xRot = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        frontLeftLeg.xRot = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
     }
 
     @Override

@@ -36,9 +36,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 public class CreepyCreepers {
 
     public static final String MOD_ID = "creepycreepers";
-
-    //TODO Restore missing creeper animations.
-    //TODO Find out why spawning is not working and fixit.
+    //TODO Find out why spawning is not working and fix it.
 
     public CreepyCreepers() {
         IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();

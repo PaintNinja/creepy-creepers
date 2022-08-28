@@ -25,6 +25,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import dev.tophatcat.creepycreepers.entities.GhostlyCreeperEntity;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 
@@ -52,18 +53,18 @@ public class GhostlyCreeperModel extends EntityModel<GhostlyCreeperEntity> {
     @Override
     public void setupAnim(@Nonnull GhostlyCreeperEntity entity, float limbSwing, float limbSwingAmount,
                           float ageInTicks, float netHeadYaw, float headPitch) {
-        //previously the render function, render code was moved to a method below
+        head.yRot = netHeadYaw * ((float) Math.PI / 180F);
+        head.xRot = headPitch * ((float) Math.PI / 180F);
+        if (!entity.isIgnited()) {
+            head.y = MathHelper.cos(ageInTicks * 0.25F) * 0.0F;
+            body.y = MathHelper.cos(ageInTicks * 0.25F) * 0.7F;
+        }
     }
 
     @Override
     public void renderToBuffer(@Nonnull MatrixStack matrixStack, @Nonnull IVertexBuilder buffer, int packedLight,
                                int packedOverlay, float red, float green, float blue, float alpha) {
-        body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
-
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.xRot = x;
-        modelRenderer.yRot = y;
-        modelRenderer.zRot = z;
+        //TODO Fix Ghostly Creeper transparency!
+        body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, 0.7F);
     }
 }

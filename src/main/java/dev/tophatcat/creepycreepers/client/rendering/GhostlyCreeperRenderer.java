@@ -45,6 +45,9 @@ public class GhostlyCreeperRenderer extends MobRenderer<GhostlyCreeperEntity, Gh
 
     @Override
     protected void scale(@Nonnull GhostlyCreeperEntity entity, @Nonnull MatrixStack poseStack, float partialTickTime) {
+        //TODO Fix Ghostly Creeper transparency!
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         float f = entity.getSwelling(partialTickTime);
         float f1 = 1.0F + MathHelper.sin(f * 100.0F) * f * 0.01F;
         f = MathHelper.clamp(f, 0.0F, 1.0F);
@@ -58,8 +61,6 @@ public class GhostlyCreeperRenderer extends MobRenderer<GhostlyCreeperEntity, Gh
     @Override
     public void render(@Nonnull GhostlyCreeperEntity entity, float entityYaw, float partialTicks,
                        @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer bufferIn, int packedLightIn) {
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         super.render(entity, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);
     }
 
