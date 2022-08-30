@@ -36,18 +36,15 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 public class CreepyCreepers {
 
     public static final String MOD_ID = "creepycreepers";
-    //TODO Find out why spawning is not working and fix it.
 
     public CreepyCreepers() {
         IEventBus mod = FMLJavaModLoadingContext.get().getModEventBus();
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
         modLoadingContext.registerConfig(ModConfig.Type.SERVER, CreepyConfig.SERVER_CONFIG_SPEC);
-
         CreepyRegistry.ENTITIES.register(mod);
         CreepyRegistry.SOUNDS.register(mod);
         mod.addListener(CreepyRegistry::registerSpawnPlacements);
         mod.addListener(CreeperSpawnHandler::addBiomeSpawns);
-
         if (FMLEnvironment.dist == Dist.CLIENT) {
             mod.addListener(CreeperRenderingRegistry::registerEntityModels);
         }
